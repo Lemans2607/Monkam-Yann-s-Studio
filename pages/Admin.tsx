@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { Upload, FileAudio, FileVideo, FileText, Image as ImageIcon, Trash2, LogOut, CheckCircle, X, Activity, Database, AlertTriangle } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
+import { Upload, FileAudio, FileVideo, FileText, Image as ImageIcon, Trash2, LogOut, CheckCircle, Database, LayoutDashboard, Wifi, Activity, Search, Server } from 'lucide-react';
 import { motion } from 'framer-motion';
 import Button from '../components/Button';
 import Modal from '../components/Modal';
@@ -8,15 +8,13 @@ import FileUploader from '../components/FileUploader';
 import { ContentCategory, ContentItem } from '../types';
 import { db } from '../services/databaseService';
 
-const Admin: React.FC = () => {
+const AdminDashboard: React.FC = () => {
   const [activeTab, setActiveTab] = useState<ContentCategory>(ContentCategory.AUDIO);
   const navigate = useNavigate();
   
-  // State pour les données
   const [contentList, setContentList] = useState<ContentItem[]>([]);
   const [isLoadingData, setIsLoadingData] = useState(true);
   
-  // Upload State
   const [isUploadModalOpen, setIsUploadModalOpen] = useState(false);
   const [uploadFiles, setUploadFiles] = useState<File[]>([]);
   const [newItemMetadata, setNewItemMetadata] = useState({
@@ -27,10 +25,6 @@ const Admin: React.FC = () => {
   });
   const [isUploading, setIsUploading] = useState(false);
 
-  // Delete Confirmation State
-  const [itemToDelete, setItemToDelete] = useState<string | null>(null);
-
-  // Initialisation et Chargement des données via SQL Service
   useEffect(() => {
     const isAuth = localStorage.getItem('isAuthenticated');
     if (!isAuth) {
@@ -41,13 +35,11 @@ const Admin: React.FC = () => {
     const fetchData = async () => {
       setIsLoadingData(true);
       try {
-        // Appel simulé SQL
         const data = await db.sql.getAllContent();
         setContentList(data);
-        // Log de connexion via NoSQL
-        db.nosql.insertLog('ADMIN_ACCESS_DASHBOARD', { user: 'admin' });
+        db.nosql.insertLog('ADMIN_ACCESS', { user: 'admin' });
       } catch (e) {
-        console.error("Erreur DB:", e);
+        console.error("DB Error", e);
       } finally {
         setIsLoadingData(false);
       }
@@ -57,360 +49,295 @@ const Admin: React.FC = () => {
   }, [navigate]);
 
   const handleLogout = () => {
-    db.nosql.insertLog('ADMIN_LOGOUT');
     localStorage.removeItem('isAuthenticated');
     navigate('/login');
   };
 
-  const requestDelete = (id: string) => {
-    setItemToDelete(id);
-  };
-
-  const confirmDelete = async () => {
-    if (!itemToDelete) return;
-
-    // Suppression SQL
-    await db.sql.deleteContent(itemToDelete);
-    // Log NoSQL
-    db.nosql.insertLog('DELETE_CONTENT', { contentId: itemToDelete });
-    
-    // Mise à jour locale de l'UI
-    setContentList(prev => prev.filter(item => item.id !== itemToDelete));
-    
-    // Close modal
-    setItemToDelete(null);
+  const handleDelete = async (id: string) => {
+    if (window.confirm("Êtes-vous sûr de vouloir supprimer cet élément définitivement ?")) {
+      await db.sql.deleteContent(id);
+      setContentList(prev => prev.filter(item => item.id !== id));
+      db.nosql.insertLog('DELETE', { id });
+    }
   };
 
   const handlePublish = async () => {
-    if (uploadFiles.length === 0 || !newItemMetadata.title) {
-      alert("Veuillez ajouter un fichier et un titre.");
-      return;
-    }
-
+    if (!uploadFiles.length || !newItemMetadata.title) return;
     setIsUploading(true);
-
-    try {
-        // Simulation traitement fichiers...
-        await new Promise(r => setTimeout(r, 1000));
-
-        const newItems: ContentItem[] = [];
-
-        for (let index = 0; index < uploadFiles.length; index++) {
-            const newItem: ContentItem = {
-                id: Date.now().toString() + index,
-                title: newItemMetadata.title + (uploadFiles.length > 1 ? ` (${index + 1})` : ''),
-                description: newItemMetadata.description || "Contenu ajouté par l'admin",
-                category: newItemMetadata.category,
-                url: '#',
-                isZeroData: newItemMetadata.isZeroData,
-                date: new Date().toISOString().split('T')[0]
-            };
-            
-            // Insertion SQL
-            await db.sql.insertContent(newItem);
-            newItems.push(newItem);
-        }
-
-        // Log NoSQL global pour l'opération
-        db.nosql.insertLog('UPLOAD_BATCH', { 
-            count: uploadFiles.length, 
-            category: newItemMetadata.category 
-        });
-
-        setContentList(prev => [...newItems, ...prev]);
-        
-        // Reset
-        setIsUploadModalOpen(false);
-        setUploadFiles([]);
-        setNewItemMetadata({
-            title: '',
-            description: '',
-            category: ContentCategory.AUDIO,
-            isZeroData: true
-        });
-
-    } catch (error) {
-        console.error("Upload failed", error);
-    } finally {
-        setIsUploading(false);
+    
+    // Simulation upload
+    await new Promise(r => setTimeout(r, 800));
+    
+    const newItems: ContentItem[] = [];
+    for (let i = 0; i < uploadFiles.length; i++) {
+        const item: ContentItem = {
+            id: Date.now().toString() + i,
+            title: newItemMetadata.title + (uploadFiles.length > 1 ? ` (${i+1})` : ''),
+            description: newItemMetadata.description,
+            category: newItemMetadata.category,
+            url: '#',
+            isZeroData: newItemMetadata.isZeroData,
+            date: new Date().toISOString().split('T')[0]
+        };
+        await db.sql.insertContent(item);
+        newItems.push(item);
     }
+    
+    setContentList(prev => [...newItems, ...prev]);
+    setIsUploading(false);
+    setIsUploadModalOpen(false);
+    setUploadFiles([]);
+    setNewItemMetadata({ title: '', description: '', category: ContentCategory.AUDIO, isZeroData: true });
   };
 
-  const icons = {
-    [ContentCategory.AUDIO]: <FileAudio className="text-yann-gold" />,
-    [ContentCategory.VIDEO]: <FileVideo className="text-yann-gold" />,
-    [ContentCategory.SLIDE]: <FileText className="text-yann-gold" />,
-    [ContentCategory.INFOGRAPHIC]: <ImageIcon className="text-yann-gold" />
+  const getIcon = (cat: ContentCategory) => {
+    switch(cat) {
+        case ContentCategory.AUDIO: return <FileAudio className="text-yann-gold" />;
+        case ContentCategory.VIDEO: return <FileVideo className="text-blue-400" />;
+        case ContentCategory.SLIDE: return <FileText className="text-orange-400" />;
+        case ContentCategory.INFOGRAPHIC: return <ImageIcon className="text-purple-400" />;
+    }
   };
 
   return (
-    <div className="relative min-h-screen overflow-hidden bg-gradient-to-br from-yann-dark via-[#001220] to-black">
+    <div className="relative min-h-screen bg-[#001220] text-gray-100 font-sans overflow-hidden">
       
-      {/* --- Lion de la Clarté Background Animation --- */}
-      <div className="absolute inset-0 pointer-events-none z-0 overflow-hidden">
-        <motion.div 
-            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] opacity-10"
-            animate={{ 
-                scale: [1, 1.05, 1],
-                rotate: [0, 2, -2, 0],
-                opacity: [0.05, 0.1, 0.05]
-            }}
-            transition={{ 
-                duration: 15, 
-                repeat: Infinity, 
-                ease: "easeInOut" 
-            }}
-        >
-            <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg" className="w-full h-full stroke-yann-gold fill-none stroke-[0.5]">
-                <path d="M100,20 L130,50 L160,40 L170,80 L150,110 L160,150 L100,180 L40,150 L50,110 L30,80 L40,40 L70,50 Z" />
-                <path d="M70,50 L100,80 L130,50" />
-                <path d="M40,150 L100,120 L160,150" />
-                <path d="M100,80 L100,120" />
-                <path d="M50,110 L100,120 L150,110" />
-                <circle cx="100" cy="100" r="90" className="stroke-yann-gold/30" strokeDasharray="5,5" />
-                <circle cx="100" cy="100" r="70" className="stroke-yann-gold/20" />
-            </svg>
-        </motion.div>
-        {[...Array(5)].map((_, i) => (
-            <motion.div
-                key={i}
-                className="absolute bg-yann-gold rounded-full"
-                style={{
-                    width: Math.random() * 4 + 2 + 'px',
-                    height: Math.random() * 4 + 2 + 'px',
-                    left: Math.random() * 100 + '%',
-                    top: Math.random() * 100 + '%'
-                }}
-                animate={{
-                    y: [0, -30, 0],
-                    opacity: [0.2, 0.6, 0.2]
-                }}
-                transition={{
-                    duration: Math.random() * 5 + 5,
-                    repeat: Infinity,
-                    ease: "easeInOut",
-                    delay: Math.random() * 2
-                }}
-            />
-        ))}
+      {/* --- Background Abstract Animation (Lion Constellation) --- */}
+      <div className="absolute inset-0 pointer-events-none z-0">
+        <div className="absolute top-[-10%] right-[-5%] w-[600px] h-[600px] bg-yann-gold/5 rounded-full blur-[100px]" />
+        <div className="absolute bottom-[-10%] left-[-5%] w-[500px] h-[500px] bg-blue-900/10 rounded-full blur-[100px]" />
+        <svg className="absolute inset-0 w-full h-full opacity-[0.03]" xmlns="http://www.w3.org/2000/svg">
+            <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+                <path d="M 40 0 L 0 0 0 40" fill="none" stroke="white" strokeWidth="1"/>
+            </pattern>
+            <rect width="100%" height="100%" fill="url(#grid)" />
+        </svg>
       </div>
 
-      <div className="relative z-10 py-12 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        {/* Admin Header with Lion Logo */}
-        <div className="flex flex-col md:flex-row justify-between items-center mb-10 bg-[#001F3F]/80 backdrop-blur-md p-6 rounded-2xl border border-yann-gold/20 shadow-[0_0_30px_rgba(0,0,0,0.5)]">
-          <div className="flex items-center gap-4 mb-4 md:mb-0">
-            <img src="/logo.png" alt="Admin Logo" className="w-14 h-14 rounded-full object-cover shadow-lg shadow-yann-gold/20 border-2 border-yann-gold bg-black" />
-            <div>
-              <h1 className="text-2xl font-bold text-white">Console Admin</h1>
-              <div className="flex items-center gap-2 text-xs text-gray-400 mt-1">
-                 <span className="flex items-center gap-1 text-green-400"><Database size={10}/> SQL: Connecté</span>
-                 <span className="w-1 h-1 bg-gray-600 rounded-full"></span>
-                 <span className="flex items-center gap-1 text-blue-400"><Activity size={10}/> NoSQL: Actif</span>
-              </div>
-            </div>
-          </div>
-          <div className="flex items-center gap-3">
-             <Button variant="secondary" onClick={handleLogout} className="!px-4 !bg-yann-steel/20 !border-white/10 hover:!bg-red-900/40 hover:!text-red-400">
-               <LogOut size={18} className="mr-2" /> Déconnexion
-             </Button>
-             <Button onClick={() => setIsUploadModalOpen(true)} className="shadow-lg shadow-yann-gold/20 border border-yann-gold/50">
-              <Upload size={18} className="mr-2" />
-              Nouveau Fichier
-            </Button>
-          </div>
-        </div>
-
-        <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
-          {/* Sidebar */}
-          <div className="space-y-3">
-            {Object.values(ContentCategory).map((cat) => (
-              <button
-                key={cat}
-                onClick={() => setActiveTab(cat)}
-                className={`w-full flex items-center gap-3 p-4 rounded-xl transition-all duration-300 backdrop-blur-sm border ${
-                  activeTab === cat 
-                    ? 'bg-gradient-to-r from-yann-gold to-yellow-600 text-yann-dark font-bold shadow-[0_0_15px_rgba(212,175,55,0.3)] border-transparent scale-105' 
-                    : 'bg-[#001F3F]/50 text-gray-400 border-white/5 hover:border-yann-gold/30 hover:text-yann-gold hover:bg-[#001F3F]/80'
-                }`}
-              >
-                {icons[cat]}
-                <span>{cat.charAt(0) + cat.slice(1).toLowerCase()}s</span>
-              </button>
-            ))}
-          </div>
-
-          {/* Content Area */}
-          <div className="lg:col-span-3">
-            <div className="bg-[#001529]/90 backdrop-blur-md rounded-2xl border border-yann-gold/10 overflow-hidden min-h-[500px] shadow-2xl">
-              <div className="p-6 border-b border-white/5 flex justify-between items-center bg-gradient-to-r from-[#001F3F] to-transparent">
-                <h2 className="text-xl font-semibold text-white flex items-center gap-2">
-                    <span className="w-2 h-6 bg-yann-gold rounded-full"></span>
-                    Fichiers récents
-                </h2>
-                <div className="flex items-center gap-3">
-                    {isLoadingData && <span className="text-yann-gold text-xs animate-pulse">Syncing DB...</span>}
-                    <span className="text-xs text-gray-400 bg-black/40 px-3 py-1 rounded-full border border-white/5">Total: {contentList.length}</span>
-                </div>
-              </div>
-              <div className="divide-y divide-white/5">
-                {isLoadingData ? (
-                    <div className="p-20 flex justify-center">
-                        <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-yann-gold"></div>
-                    </div>
-                ) : contentList.filter(item => activeTab === item.category).length === 0 ? (
-                   <div className="p-12 text-center flex flex-col items-center text-gray-500">
-                     <div className="mb-4 opacity-50 text-4xl grayscale">
-                       {icons[activeTab]}
-                     </div>
-                     <p>Aucun fichier dans cette catégorie pour le moment.</p>
-                     <Button variant="ghost" size="sm" className="mt-4" onClick={() => setIsUploadModalOpen(true)}>
-                       Ajouter du contenu
-                     </Button>
-                   </div>
-                ) : (
-                  contentList.filter(item => activeTab === item.category).map((item) => (
-                    <div key={item.id} className="p-4 flex flex-col sm:flex-row sm:items-center justify-between hover:bg-yann-gold/5 transition-colors gap-4 animate-in fade-in group">
-                      <div className="flex items-center gap-4">
-                        <div className="p-3 bg-[#001220] rounded-lg border border-white/5 shadow-inner group-hover:border-yann-gold/30 transition-colors">
-                          {icons[item.category]}
-                        </div>
-                        <div>
-                          <h4 className="text-white font-medium group-hover:text-yann-gold transition-colors">{item.title}</h4>
-                          <p className="text-sm text-gray-400 line-clamp-1">{item.description}</p>
-                        </div>
-                      </div>
-                      <div className="flex items-center gap-4 self-end sm:self-auto">
-                        {item.isZeroData && (
-                          <span className="px-2 py-1 rounded-full bg-green-900/20 text-green-400 text-xs font-medium border border-green-500/10 whitespace-nowrap">
-                            Zéro Data
-                          </span>
-                        )}
-                        <span className="text-sm text-gray-500 font-mono">{item.date}</span>
-                        <button 
-                          onClick={() => requestDelete(item.id)}
-                          className="p-2 text-gray-500 hover:text-red-400 hover:bg-red-400/10 rounded-lg transition-colors border border-transparent hover:border-red-400/20"
-                          title="Supprimer"
-                        >
-                          <Trash2 size={18} />
-                        </button>
-                      </div>
-                    </div>
-                  ))
-                )}
-              </div>
-            </div>
-          </div>
-        </div>
-
-        {/* Upload Modal */}
-        <Modal
-          isOpen={isUploadModalOpen}
-          onClose={() => setIsUploadModalOpen(false)}
-          title="Ajouter du nouveau contenu (SQL Insert)"
-        >
-          <div className="space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-              <div>
-                <label className="block text-sm font-medium text-gray-400 mb-1.5">Titre du fichier</label>
-                <input 
-                  type="text" 
-                  className="w-full bg-[#001220] border border-yann-steel/30 rounded-lg p-3 text-white focus:border-yann-gold focus:ring-1 focus:ring-yann-gold/50 outline-none placeholder-gray-600 transition-all"
-                  placeholder="Ex: Cours Droit Civil - Chap 1"
-                  value={newItemMetadata.title}
-                  onChange={(e) => setNewItemMetadata({...newItemMetadata, title: e.target.value})}
-                />
+      <div className="relative z-10 flex flex-col h-screen">
+        {/* Top Header */}
+        <header className="bg-[#001529]/80 backdrop-blur-md border-b border-yann-gold/10 px-6 py-4 flex justify-between items-center shadow-lg">
+           <div className="flex items-center gap-4">
+              <div className="w-10 h-10 bg-gradient-to-br from-yann-gold to-yellow-700 rounded-lg flex items-center justify-center shadow-lg shadow-yann-gold/20">
+                 <LayoutDashboard className="text-white" size={20} />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-400 mb-1.5">Catégorie</label>
-                <select 
-                  className="w-full bg-[#001220] border border-yann-steel/30 rounded-lg p-3 text-white focus:border-yann-gold focus:ring-1 focus:ring-yann-gold/50 outline-none transition-all"
-                  value={newItemMetadata.category}
-                  onChange={(e) => setNewItemMetadata({...newItemMetadata, category: e.target.value as ContentCategory})}
-                >
-                  {Object.values(ContentCategory).map(cat => (
-                    <option key={cat} value={cat} className="bg-[#001220]">{cat}</option>
-                  ))}
-                </select>
-              </div>
-            </div>
-
-            <div>
-               <label className="block text-sm font-medium text-gray-400 mb-1.5">Description courte</label>
-               <input 
-                  type="text" 
-                  className="w-full bg-[#001220] border border-yann-steel/30 rounded-lg p-3 text-white focus:border-yann-gold focus:ring-1 focus:ring-yann-gold/50 outline-none placeholder-gray-600 transition-all"
-                  placeholder="Description pour les étudiants..."
-                  value={newItemMetadata.description}
-                  onChange={(e) => setNewItemMetadata({...newItemMetadata, description: e.target.value})}
-                />
-            </div>
-
-            <div className="flex items-center gap-2 bg-[#001220] p-3 rounded-lg border border-white/5">
-              <input 
-                type="checkbox" 
-                id="zeroData"
-                checked={newItemMetadata.isZeroData}
-                onChange={(e) => setNewItemMetadata({...newItemMetadata, isZeroData: e.target.checked})}
-                className="w-4 h-4 rounded border-gray-600 text-yann-gold focus:ring-yann-gold bg-gray-700"
-              />
-              <label htmlFor="zeroData" className="text-sm text-gray-300 cursor-pointer select-none">Marquer comme contenu "Zéro Data" (Optimisé)</label>
-            </div>
-
-            <div className="border-t border-white/10 pt-4">
-              <h4 className="text-sm font-medium text-white mb-2">Fichiers à uploader</h4>
-              <FileUploader 
-                onFilesSelected={(files) => setUploadFiles(files)}
-                maxSizeInMB={100}
-              />
-            </div>
-
-            <div className="flex justify-end pt-2">
-               <Button onClick={handlePublish} disabled={isUploading || !newItemMetadata.title || uploadFiles.length === 0} className={isUploading ? 'animate-pulse' : ''}>
-                 {isUploading ? (
-                   <>Envoi en cours...</>
-                 ) : (
-                   <>
-                     <CheckCircle className="mr-2" size={18} />
-                     Commit Transaction
-                   </>
-                 )}
-               </Button>
-            </div>
-          </div>
-        </Modal>
-
-        {/* Confirmation Modal */}
-        <Modal
-          isOpen={!!itemToDelete}
-          onClose={() => setItemToDelete(null)}
-          title="Confirmation requise"
-        >
-           <div className="flex flex-col items-center text-center p-4">
-              <div className="w-16 h-16 bg-red-900/20 rounded-full flex items-center justify-center mb-4 text-red-500 border-2 border-red-900/50 shadow-[0_0_15px_rgba(239,68,68,0.2)]">
-                <AlertTriangle size={32} />
-              </div>
-              <h3 className="text-xl font-bold text-white mb-2">Supprimer ce fichier ?</h3>
-              <p className="text-gray-400 mb-8 max-w-sm">
-                Cette action est irréversible. Le fichier sera définitivement retiré de la base de données SQL et des logs seront créés.
-              </p>
-              
-              <div className="flex gap-4 w-full">
-                <Button variant="secondary" fullWidth onClick={() => setItemToDelete(null)}>
-                  Annuler
-                </Button>
-                <Button 
-                  fullWidth 
-                  onClick={confirmDelete}
-                  className="bg-red-600 hover:bg-red-700 text-white border-none shadow-lg shadow-red-900/20"
-                >
-                  Confirmer la suppression
-                </Button>
+                <h1 className="text-lg font-bold text-white tracking-wide leading-tight">CONSOLE <span className="text-yann-gold">ADMIN</span></h1>
+                <p className="text-[10px] text-gray-400 tracking-widest uppercase">Hub de Clarté v1.0</p>
               </div>
            </div>
-        </Modal>
+           
+           <div className="flex items-center gap-6">
+              {/* Status Indicators */}
+              <div className="hidden md:flex items-center gap-4 bg-black/20 px-4 py-2 rounded-full border border-white/5">
+                 <div className="flex items-center gap-2">
+                    <span className="relative flex h-2 w-2">
+                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
+                      <span className="relative inline-flex rounded-full h-2 w-2 bg-green-500"></span>
+                    </span>
+                    <span className="text-xs text-gray-300 font-mono">SQL: Online</span>
+                 </div>
+                 <div className="w-px h-3 bg-white/10"></div>
+                 <div className="flex items-center gap-2">
+                    <span className="relative flex h-2 w-2">
+                      <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-blue-400 opacity-75"></span>
+                      <span className="relative inline-flex rounded-full h-2 w-2 bg-blue-500"></span>
+                    </span>
+                    <span className="text-xs text-gray-300 font-mono">NoSQL: Active</span>
+                 </div>
+              </div>
+
+              <Button variant="ghost" size="sm" onClick={handleLogout} className="text-gray-400 hover:text-red-400 hover:bg-red-900/20 border border-transparent hover:border-red-500/30">
+                  <LogOut size={16} className="mr-2" /> <span className="hidden sm:inline">Déconnexion</span>
+              </Button>
+           </div>
+        </header>
+
+        {/* Main Content Area (Grid Layout) */}
+        <div className="flex-1 overflow-hidden">
+          <div className="h-full max-w-7xl mx-auto flex flex-col lg:flex-row">
+            
+            {/* Sidebar Navigation */}
+            <aside className="w-full lg:w-64 p-6 lg:border-r border-white/5 flex flex-col gap-2 bg-[#001220]/50 lg:bg-transparent overflow-x-auto lg:overflow-visible flex-shrink-0">
+               <div className="mb-4 px-2">
+                  <h3 className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Médiathèque</h3>
+               </div>
+               {Object.values(ContentCategory).map(cat => (
+                  <button
+                    key={cat}
+                    onClick={() => setActiveTab(cat)}
+                    className={`w-full text-left px-4 py-3 rounded-xl text-sm font-medium transition-all duration-300 flex items-center gap-3 border ${
+                      activeTab === cat 
+                        ? 'bg-gradient-to-r from-yann-gold/20 to-transparent border-yann-gold/50 text-yann-gold shadow-[0_0_15px_rgba(212,175,55,0.1)]' 
+                        : 'border-transparent text-gray-400 hover:text-white hover:bg-white/5'
+                    }`}
+                  >
+                    {getIcon(cat)}
+                    <span>{cat}</span>
+                    {contentList.filter(i => i.category === cat).length > 0 && (
+                       <span className="ml-auto text-[10px] bg-white/10 px-2 py-0.5 rounded-full text-gray-300">
+                         {contentList.filter(i => i.category === cat).length}
+                       </span>
+                    )}
+                  </button>
+               ))}
+               
+               <div className="mt-8 px-2">
+                  <h3 className="text-xs font-bold text-gray-500 uppercase tracking-wider mb-2">Actions Rapides</h3>
+                  <Button onClick={() => setIsUploadModalOpen(true)} fullWidth className="bg-yann-gold hover:bg-yellow-500 text-yann-dark border-none shadow-lg shadow-yann-gold/10 group">
+                    <Upload size={18} className="mr-2 group-hover:-translate-y-1 transition-transform" /> Upload
+                  </Button>
+               </div>
+            </aside>
+
+            {/* Content List Area */}
+            <main className="flex-1 p-6 lg:p-8 overflow-y-auto custom-scrollbar">
+               <div className="flex justify-between items-center mb-6">
+                  <h2 className="text-2xl font-bold text-white flex items-center gap-3">
+                     <span className="w-1.5 h-8 bg-yann-gold rounded-full"></span>
+                     Gestion: <span className="text-yann-gold">{activeTab}</span>
+                  </h2>
+                  <div className="relative hidden sm:block">
+                     <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-500" size={16} />
+                     <input 
+                        type="text" 
+                        placeholder="Rechercher un fichier..." 
+                        className="bg-black/20 border border-white/10 rounded-full pl-10 pr-4 py-2 text-sm text-white focus:border-yann-gold focus:ring-1 focus:ring-yann-gold outline-none w-64 transition-all"
+                     />
+                  </div>
+               </div>
+
+               {isLoadingData ? (
+                  <div className="h-64 flex flex-col items-center justify-center text-yann-gold/50 gap-4">
+                     <div className="w-12 h-12 border-4 border-current border-t-transparent rounded-full animate-spin"></div>
+                     <span className="animate-pulse text-sm">Synchronisation avec le Cerveau Central...</span>
+                  </div>
+               ) : contentList.filter(i => i.category === activeTab).length === 0 ? (
+                  <div className="h-64 flex flex-col items-center justify-center text-gray-500 gap-4 bg-white/5 rounded-2xl border border-white/5 border-dashed">
+                     <Server size={48} className="opacity-20"/>
+                     <p>Aucun fichier trouvé dans le secteur {activeTab}.</p>
+                  </div>
+               ) : (
+                  <div className="grid grid-cols-1 gap-4">
+                     {contentList.filter(i => i.category === activeTab).map((item) => (
+                        <motion.div 
+                           initial={{ opacity: 0, y: 10 }}
+                           animate={{ opacity: 1, y: 0 }}
+                           key={item.id} 
+                           className="group flex flex-col sm:flex-row items-start sm:items-center justify-between p-4 bg-[#001529] border border-white/5 rounded-xl hover:border-yann-gold/30 hover:bg-[#001A33] transition-all duration-300 shadow-sm hover:shadow-lg hover:shadow-black/20"
+                        >
+                           <div className="flex items-center gap-4 w-full sm:w-auto overflow-hidden">
+                              <div className="w-12 h-12 rounded-lg bg-black/30 border border-white/5 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
+                                 {getIcon(item.category)}
+                              </div>
+                              <div className="min-w-0">
+                                 <h4 className="font-semibold text-gray-200 group-hover:text-yann-gold transition-colors truncate">{item.title}</h4>
+                                 <p className="text-xs text-gray-500 truncate max-w-md">{item.description}</p>
+                              </div>
+                           </div>
+
+                           <div className="flex items-center gap-4 mt-4 sm:mt-0 w-full sm:w-auto justify-between sm:justify-end">
+                              {item.isZeroData && (
+                                 <span className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-green-500/10 border border-green-500/20 text-green-400 text-[10px] font-bold uppercase tracking-wide">
+                                    <Wifi size={10} strokeWidth={3} /> Zéro Data
+                                 </span>
+                              )}
+                              <span className="text-xs text-gray-600 font-mono">{item.date}</span>
+                              <div className="w-px h-4 bg-white/10 hidden sm:block"></div>
+                              <button 
+                                onClick={() => handleDelete(item.id)}
+                                className="p-2 text-gray-500 hover:text-red-400 hover:bg-red-500/10 rounded-lg transition-colors border border-transparent hover:border-red-500/20"
+                                title="Supprimer"
+                              >
+                                 <Trash2 size={18} />
+                              </button>
+                           </div>
+                        </motion.div>
+                     ))}
+                  </div>
+               )}
+            </main>
+          </div>
+        </div>
       </div>
+
+      {/* Upload Modal (Premium Style) */}
+      <Modal isOpen={isUploadModalOpen} onClose={() => setIsUploadModalOpen(false)} title="Upload de Contenu Sécurisé">
+         <div className="space-y-6">
+            <div className="bg-gradient-to-r from-blue-900/20 to-transparent border-l-4 border-blue-500 p-4 rounded-r-lg flex gap-3 text-sm text-blue-200/80">
+               <Database size={20} className="shrink-0 text-blue-400" />
+               <p>Les fichiers sont cryptés et stockés sur le serveur sécurisé. Assurez-vous de détenir les droits de propriété intellectuelle.</p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div className="space-y-2">
+                   <label className="text-xs font-bold text-gray-400 uppercase tracking-wider">Catégorie</label>
+                   <div className="relative">
+                      <select 
+                          className="w-full bg-[#001220] border border-white/10 rounded-lg p-3 text-white outline-none focus:border-yann-gold focus:ring-1 focus:ring-yann-gold appearance-none transition-all"
+                          value={newItemMetadata.category}
+                          onChange={(e) => setNewItemMetadata({...newItemMetadata, category: e.target.value as ContentCategory})}
+                      >
+                          {Object.values(ContentCategory).map(c => <option key={c} value={c}>{c}</option>)}
+                      </select>
+                      <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-gray-500">▼</div>
+                   </div>
+                </div>
+                
+                <div className="flex items-end">
+                   <label className="flex items-center gap-3 cursor-pointer bg-[#001220] border border-white/10 rounded-lg p-3 w-full hover:border-green-500/30 hover:bg-green-900/5 transition-all group">
+                      <div className="relative flex items-center">
+                        <input 
+                          type="checkbox" 
+                          checked={newItemMetadata.isZeroData}
+                          onChange={(e) => setNewItemMetadata({...newItemMetadata, isZeroData: e.target.checked})}
+                          className="peer h-5 w-5 cursor-pointer appearance-none rounded-md border border-gray-600 transition-all checked:border-yann-gold checked:bg-yann-gold"
+                        />
+                        <div className="pointer-events-none absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 text-yann-dark opacity-0 peer-checked:opacity-100">
+                          <svg xmlns="http://www.w3.org/2000/svg" className="h-3.5 w-3.5" viewBox="0 0 20 20" fill="currentColor">
+                            <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                          </svg>
+                        </div>
+                      </div>
+                      <div className="flex flex-col">
+                         <span className="text-sm font-medium text-gray-200 group-hover:text-white transition-colors">Tag "Zéro Data"</span>
+                         <span className="text-[10px] text-gray-500">Optimisation compression</span>
+                      </div>
+                   </label>
+                </div>
+            </div>
+
+            <div className="space-y-2">
+               <label className="text-xs font-bold text-gray-400 uppercase tracking-wider">Méta-données</label>
+               <input 
+                  type="text" 
+                  placeholder="Titre du fichier" 
+                  className="w-full bg-[#001220] border border-white/10 rounded-lg p-3 text-white outline-none focus:border-yann-gold focus:ring-1 focus:ring-yann-gold transition-all placeholder-gray-600"
+                  value={newItemMetadata.title}
+                  onChange={(e) => setNewItemMetadata({...newItemMetadata, title: e.target.value})}
+               />
+               <textarea 
+                  placeholder="Description courte pour les utilisateurs..." 
+                  className="w-full bg-[#001220] border border-white/10 rounded-lg p-3 text-white outline-none focus:border-yann-gold focus:ring-1 focus:ring-yann-gold transition-all h-24 resize-none placeholder-gray-600 custom-scrollbar"
+                  value={newItemMetadata.description}
+                  onChange={(e) => setNewItemMetadata({...newItemMetadata, description: e.target.value})}
+               />
+            </div>
+
+            <div className="border-t border-white/10 pt-6">
+                <FileUploader onFilesSelected={setUploadFiles} />
+            </div>
+
+            <div className="pt-2 flex justify-end gap-3">
+               <Button variant="ghost" onClick={() => setIsUploadModalOpen(false)}>Annuler</Button>
+               <Button onClick={handlePublish} disabled={isUploading || !newItemMetadata.title || !uploadFiles.length} className={isUploading ? "animate-pulse" : "shadow-lg shadow-yann-gold/20"}>
+                  {isUploading ? "Traitement..." : <><CheckCircle size={18} className="mr-2"/> Publier sur le Hub</>}
+               </Button>
+            </div>
+         </div>
+      </Modal>
     </div>
   );
 };
 
-export default Admin;
+export default AdminDashboard;

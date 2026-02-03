@@ -4,6 +4,7 @@ interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: 'primary' | 'secondary' | 'outline' | 'ghost';
   size?: 'sm' | 'md' | 'lg';
   fullWidth?: boolean;
+  pulsing?: boolean;
 }
 
 const Button: React.FC<ButtonProps> = ({ 
@@ -11,6 +12,7 @@ const Button: React.FC<ButtonProps> = ({
   variant = 'primary', 
   size = 'md', 
   fullWidth = false, 
+  pulsing = false,
   className = '', 
   ...props 
 }) => {
@@ -30,9 +32,11 @@ const Button: React.FC<ButtonProps> = ({
     lg: "px-8 py-4 text-lg"
   };
 
+  const pulseClass = pulsing ? "animate-subtle-pulse" : "";
+
   return (
     <button 
-      className={`${baseStyles} ${sizes[size]} ${variants[variant]} ${fullWidth ? 'w-full' : ''} ${className}`}
+      className={`${baseStyles} ${sizes[size]} ${variants[variant]} ${fullWidth ? 'w-full' : ''} ${pulseClass} ${className}`}
       {...props}
     >
       {children}

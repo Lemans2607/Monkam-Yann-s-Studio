@@ -5,6 +5,12 @@ export enum UserRole {
   ADMIN = 'ADMIN'
 }
 
+export interface User {
+  username: string;
+  role: UserRole;
+  isAuthenticated: boolean;
+}
+
 export enum ContentCategory {
   AUDIO = 'AUDIO',
   VIDEO = 'VIDEO',

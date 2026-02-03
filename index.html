@@ -3,7 +3,22 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    
+    <!-- SEO & Open Graph -->
     <title>Yann's Note - Hub de Clarté IA</title>
+    <meta name="description" content="Plateforme SaaS éducative et professionnelle pour le Cameroun. Intelligence Artificielle ancrée sur vos documents, services étudiants et solutions PME." />
+    <meta property="og:title" content="Yann's Note - Hub de Clarté IA" />
+    <meta property="og:description" content="Transformez le chaos en clarté royale. IA 0% hallucination pour étudiants et entrepreneurs." />
+    <meta property="og:image" content="/logo.png" />
+    <meta property="og:url" content="https://yannsnote.cm" />
+    <meta property="og:type" content="website" />
+    
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Yann's Note - Hub de Clarté IA" />
+    <meta name="twitter:description" content="Plateforme IA éducative et professionnelle optimisée pour l'Afrique." />
+    <meta name="twitter:image" content="/logo.png" />
+
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script>
@@ -13,30 +28,48 @@
           extend: {
             colors: {
               yann: {
-                dark: '#001F3F', // Bleu profond
+                dark: '#001F3F', // Bleu profond (Dark Mode Bg)
                 gold: '#D4AF37', // Or pur
                 steel: '#71797E', // Gris acier
-                light: '#F4F4F9',
+                light: '#F8F9FA', // Light Mode Bg
               }
             },
             fontFamily: {
               sans: ['Inter', 'sans-serif'],
+            },
+            animation: {
+              'subtle-pulse': 'subtle-pulse 3s infinite',
+            },
+            keyframes: {
+              'subtle-pulse': {
+                '0%, 100%': { transform: 'scale(1)', boxShadow: '0 0 0 0 rgba(212, 175, 55, 0)' },
+                '50%': { transform: 'scale(1.03)', boxShadow: '0 0 20px 0 rgba(212, 175, 55, 0.4)' },
+              }
             }
           }
         }
       }
     </script>
     <style>
+      /* Dynamic Background based on theme class */
       body {
+        transition: background-color 0.3s ease, color 0.3s ease;
+      }
+      .dark body {
         background-color: #001F3F;
         color: #F4F4F9;
       }
-      /* Custom scrollbar for dark theme */
+      body {
+        background-color: #F8F9FA;
+        color: #1a1a1a;
+      }
+
+      /* Custom scrollbar */
       ::-webkit-scrollbar {
         width: 8px;
       }
       ::-webkit-scrollbar-track {
-        background: #001F3F; 
+        background: transparent; 
       }
       ::-webkit-scrollbar-thumb {
         background: #71797E; 
@@ -60,8 +93,7 @@
 }
 </script>
 </head>
-  <body>
-      <script type="module" src="/index.tsx"></script>
+  <body class="bg-yann-light dark:bg-yann-dark text-gray-900 dark:text-white">
     <div id="root"></div>
   </body>
 </html>

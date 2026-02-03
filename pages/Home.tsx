@@ -1,11 +1,29 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { ArrowRight, CheckCircle, Database, BrainCircuit, FileText } from 'lucide-react';
+import { ArrowRight, CheckCircle, Database, BrainCircuit, FileText, Quote } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import Button from '../components/Button';
 import { WHATSAPP_LINK } from '../constants';
 
 const Home: React.FC = () => {
+  const testimonials = [
+    {
+      text: "J'ai validé mon Droit Administratif grâce aux résumés audio. Ça ne consomme rien et je peux réviser dans le taxi !",
+      author: "Sarah",
+      role: "Étudiante, U. Yaoundé II"
+    },
+    {
+      text: "Le décodeur DAO m'a sauvé d'un piège dans un marché public à Douala. Indispensable pour toute PME sérieuse.",
+      author: "Alain",
+      role: "CEO, BTP Construction"
+    },
+    {
+      text: "Enfin une IA qui ne raconte pas n'importe quoi sur le contexte camerounais. Les références juridiques sont précises.",
+      author: "Dr. Talla",
+      role: "Enseignant-Chercheur"
+    }
+  ];
+
   return (
     <div className="flex flex-col min-h-screen">
       {/* Hero Section */}
@@ -29,7 +47,7 @@ const Home: React.FC = () => {
             </p>
             <div className="flex flex-col sm:flex-row justify-center gap-4">
               <Link to="/brain">
-                <Button className="w-full sm:w-auto text-lg px-8 animate-pulse shadow-[0_0_20px_rgba(212,175,55,0.3)]">
+                <Button pulsing className="w-full sm:w-auto text-lg px-8">
                   Accéder au Cerveau Numérique <ArrowRight className="ml-2" size={20} />
                 </Button>
               </Link>
@@ -76,6 +94,39 @@ const Home: React.FC = () => {
             </div>
           </div>
         </div>
+      </section>
+
+      {/* Testimonials Section */}
+      <section className="py-20 bg-[#001529] relative overflow-hidden">
+         {/* Decorative elements */}
+         <div className="absolute top-0 right-0 p-12 opacity-5">
+            <Quote size={200} className="text-yann-gold" />
+         </div>
+         
+         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+            <div className="text-center mb-16">
+               <h2 className="text-3xl font-bold text-white">Ils ont choisi la <span className="text-yann-gold">Clarté</span></h2>
+               <p className="text-gray-400 mt-2">Ce que nos utilisateurs disent de Yann's Note</p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+               {testimonials.map((t, i) => (
+                  <div key={i} className="bg-white/5 p-8 rounded-2xl border border-white/5 backdrop-blur-sm hover:-translate-y-2 transition-transform duration-300">
+                     <Quote className="text-yann-gold mb-4 opacity-50" size={32} />
+                     <p className="text-gray-300 italic mb-6 text-lg">"{t.text}"</p>
+                     <div className="flex items-center gap-3">
+                        <div className="w-10 h-10 rounded-full bg-gradient-to-br from-yann-gold to-yellow-700 flex items-center justify-center font-bold text-yann-dark">
+                           {t.author.charAt(0)}
+                        </div>
+                        <div>
+                           <p className="text-white font-bold">{t.author}</p>
+                           <p className="text-yann-gold text-sm">{t.role}</p>
+                        </div>
+                     </div>
+                  </div>
+               ))}
+            </div>
+         </div>
       </section>
 
       {/* Floating WhatsApp Button */}
