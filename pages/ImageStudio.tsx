@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { Sparkles, Image as ImageIcon, Download, ArrowRight, Wand2, RefreshCw } from 'lucide-react';
 import FileUploader from '../components/FileUploader';
 import Button from '../components/Button';
+import Spinner from '../components/Spinner';
 import { editImageWithGenAI } from '../services/geminiService';
 
 const ImageStudio: React.FC = () => {
@@ -134,7 +135,7 @@ const ImageStudio: React.FC = () => {
           >
             {isProcessing ? (
                <span className="flex items-center gap-2">
-                 <RefreshCw className="animate-spin" /> Magie en cours...
+                 <Spinner size="sm" className="mr-2" color="bg-yann-dark" /> Magie en cours...
                </span>
             ) : (
                <span className="flex items-center gap-2">
@@ -171,7 +172,7 @@ const ImageStudio: React.FC = () => {
                  <div className="text-center p-8">
                     {isProcessing ? (
                         <div className="space-y-4">
-                            <div className="w-16 h-16 border-4 border-yann-gold/30 border-t-yann-gold rounded-full animate-spin mx-auto"></div>
+                            <Spinner size="lg" className="mx-auto" />
                             <p className="text-yann-gold font-medium animate-pulse">L'IA redessine votre image...</p>
                         </div>
                     ) : (

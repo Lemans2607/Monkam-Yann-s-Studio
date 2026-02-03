@@ -3,6 +3,7 @@ import { motion } from 'framer-motion';
 import { ArrowRight, CheckCircle, Database, BrainCircuit, FileText, Quote } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import Button from '../components/Button';
+import Tooltip from '../components/Tooltip';
 import { WHATSAPP_LINK } from '../constants';
 
 const Home: React.FC = () => {
@@ -66,27 +67,33 @@ const Home: React.FC = () => {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
             <div className="bg-white/5 p-8 rounded-2xl border border-white/10 hover:border-yann-gold/50 transition-colors">
-              <div className="w-12 h-12 bg-yann-gold/20 rounded-lg flex items-center justify-center mb-6">
-                <BrainCircuit className="text-yann-gold" size={28} />
-              </div>
+              <Tooltip text="Une technologie IA qui ne s'appuie que sur vos propres sources pour garantir la vérité.">
+                <div className="w-12 h-12 bg-yann-gold/20 rounded-lg flex items-center justify-center mb-6 cursor-help">
+                  <BrainCircuit className="text-yann-gold" size={28} />
+                </div>
+              </Tooltip>
               <h3 className="text-xl font-bold text-white mb-3">Intelligence Ancrée</h3>
               <p className="text-gray-400">
                 Contrairement aux autres IA, Yann's Note se base uniquement sur vos documents et le contexte camerounais. Aucune invention, juste des faits.
               </p>
             </div>
             <div className="bg-white/5 p-8 rounded-2xl border border-white/10 hover:border-yann-gold/50 transition-colors">
-              <div className="w-12 h-12 bg-yann-gold/20 rounded-lg flex items-center justify-center mb-6">
-                <Database className="text-yann-gold" size={28} />
-              </div>
+              <Tooltip text="Formats optimisés (texte/audio) pour consommer le moins de Mo possible.">
+                <div className="w-12 h-12 bg-yann-gold/20 rounded-lg flex items-center justify-center mb-6 cursor-help">
+                  <Database className="text-yann-gold" size={28} />
+                </div>
+              </Tooltip>
               <h3 className="text-xl font-bold text-white mb-3">Économie Zéro Data</h3>
               <p className="text-gray-400">
                 Nos fiches audio et synthèses sont optimisées pour consommer un minimum de données mobiles. Idéal pour le Cameroun.
               </p>
             </div>
             <div className="bg-white/5 p-8 rounded-2xl border border-white/10 hover:border-yann-gold/50 transition-colors">
-              <div className="w-12 h-12 bg-yann-gold/20 rounded-lg flex items-center justify-center mb-6">
-                <FileText className="text-yann-gold" size={28} />
-              </div>
+              <Tooltip text="Des templates validés par des experts pour un usage immédiat.">
+                <div className="w-12 h-12 bg-yann-gold/20 rounded-lg flex items-center justify-center mb-6 cursor-help">
+                  <FileText className="text-yann-gold" size={28} />
+                </div>
+              </Tooltip>
               <h3 className="text-xl font-bold text-white mb-3">Documents Prêts</h3>
               <p className="text-gray-400">
                 DAO, Pitch Decks, Guides d'étude... Générez des documents professionnels formatés et prêts à l'emploi en quelques clics.

@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Upload, BookOpen, Headphones, MessageCircle, CheckCircle, Info, GraduationCap, Loader2, Sparkles, FileText, Wifi } from 'lucide-react';
+import { Upload, BookOpen, Headphones, MessageCircle, CheckCircle, Info, GraduationCap, Sparkles, FileText, Wifi } from 'lucide-react';
 import Button from '../components/Button';
 import ZeroDataBadge from '../components/ZeroDataBadge';
 import FileUploader from '../components/FileUploader';
 import Modal from '../components/Modal';
+import Spinner from '../components/Spinner';
 import { WHATSAPP_LINK } from '../constants';
 import { generateThinkingResponse } from '../services/geminiService';
 
@@ -188,7 +189,7 @@ const Students: React.FC = () => {
       <Modal isOpen={showGuideModal} onClose={() => setShowGuideModal(false)} title="Guide Généré par IA">
           {isGeneratingGuide ? (
               <div className="p-12 text-center">
-                  <Loader2 className="animate-spin w-12 h-12 text-yann-gold mx-auto mb-4" />
+                  <Spinner size="lg" className="mx-auto mb-4" />
                   <p className="text-white">Analyse pédagogique en cours...</p>
               </div>
           ) : (

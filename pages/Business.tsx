@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import { motion } from 'framer-motion';
-import { Briefcase, FileCheck, Mic, TrendingUp, ArrowRight, Download, Loader2, Sparkles, CheckCircle2 } from 'lucide-react';
+import { Briefcase, FileCheck, Mic, TrendingUp, ArrowRight, Download, Sparkles, CheckCircle2 } from 'lucide-react';
 import Button from '../components/Button';
 import Modal from '../components/Modal';
 import FileUploader from '../components/FileUploader';
+import Tooltip from '../components/Tooltip';
+import Spinner from '../components/Spinner';
 import { PRICING_DATA } from '../constants';
 import { generateThinkingResponse } from '../services/geminiService';
 
@@ -88,9 +90,11 @@ const Business: React.FC = () => {
         {services.map((service) => (
           <div key={service.id} className="group relative bg-[#001529] rounded-2xl p-8 border border-white/5 hover:border-yann-gold/50 transition-all duration-300 hover:-translate-y-1">
             <div className="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-transparent via-yann-gold to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
-            <div className="w-16 h-16 bg-gradient-to-br from-yann-gold to-yellow-600 rounded-xl flex items-center justify-center mb-6 shadow-lg shadow-yann-gold/10 group-hover:shadow-yann-gold/20 transition-all">
-               {service.icon}
-            </div>
+            <Tooltip text="Cliquez pour lancer l'outil">
+                <div className="w-16 h-16 bg-gradient-to-br from-yann-gold to-yellow-600 rounded-xl flex items-center justify-center mb-6 shadow-lg shadow-yann-gold/10 group-hover:shadow-yann-gold/20 transition-all cursor-pointer">
+                   {service.icon}
+                </div>
+            </Tooltip>
             <h3 className="text-xl font-bold text-white mb-3">{service.title}</h3>
             <p className="text-gray-400 text-sm leading-relaxed mb-8 h-20">{service.desc}</p>
             <button 
@@ -145,7 +149,7 @@ const Business: React.FC = () => {
             
             {!aiResult ? (
                <Button fullWidth onClick={handleRunDaoAnalysis} disabled={isAiProcessing}>
-                  {isAiProcessing ? <span className="flex gap-2 items-center"><Loader2 className="animate-spin"/> Analyse...</span> : "Analyser"}
+                  {isAiProcessing ? <span className="flex gap-2 items-center"><Spinner size="sm" className="mr-2"/> Analyse...</span> : "Analyser"}
                </Button>
             ) : (
                <div className="p-4 bg-black/30 rounded border border-yann-gold/30 text-gray-300 text-sm whitespace-pre-wrap">{aiResult}</div>
@@ -160,7 +164,7 @@ const Business: React.FC = () => {
               <textarea placeholder="Solution" className="w-full bg-black/30 border border-white/10 rounded p-3 text-white h-20" value={pitchData.solution} onChange={e => setPitchData({...pitchData, solution: e.target.value})} />
               {!aiResult ? (
                  <Button fullWidth onClick={handleGeneratePitch} disabled={isAiProcessing || !pitchData.projectName}>
-                    {isAiProcessing ? <span className="flex gap-2 items-center"><Loader2 className="animate-spin"/> Structuration...</span> : "Générer Structure"}
+                    {isAiProcessing ? <span className="flex gap-2 items-center"><Spinner size="sm" className="mr-2"/> Structuration...</span> : "Générer Structure"}
                  </Button>
               ) : (
                  <div className="p-4 bg-black/30 rounded border border-yann-gold/30 text-gray-300 text-sm whitespace-pre-wrap">{aiResult}</div>
@@ -173,7 +177,7 @@ const Business: React.FC = () => {
               <input type="text" placeholder="Sujet du Podcast" className="w-full bg-black/30 border border-white/10 rounded p-3 text-white" value={podcastTopic} onChange={e => setPodcastTopic(e.target.value)} />
               {!aiResult ? (
                  <Button fullWidth onClick={handleGeneratePodcast} disabled={isAiProcessing || !podcastTopic}>
-                    {isAiProcessing ? <span className="flex gap-2 items-center"><Loader2 className="animate-spin"/> Rédaction...</span> : "Écrire le Script"}
+                    {isAiProcessing ? <span className="flex gap-2 items-center"><Spinner size="sm" className="mr-2"/> Rédaction...</span> : "Écrire le Script"}
                  </Button>
               ) : (
                  <div className="p-4 bg-black/30 rounded border border-yann-gold/30 text-gray-300 text-sm whitespace-pre-wrap">{aiResult}</div>

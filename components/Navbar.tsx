@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { Menu, X, ShieldCheck, Wand2, Sun, Moon, LogOut, User as UserIcon } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 import Button from './Button';
 import { useAuth } from '../contexts/AuthContext';
 import { useTheme } from '../contexts/ThemeContext';
@@ -85,7 +86,29 @@ const Navbar: React.FC = () => {
                className="p-2 rounded-full text-gray-500 hover:text-yann-gold dark:text-gray-300 dark:hover:text-yann-gold transition-colors hover:bg-gray-100 dark:hover:bg-white/10"
                aria-label="Toggle Theme"
              >
-               {theme === 'dark' ? <Sun size={20} /> : <Moon size={20} />}
+               <AnimatePresence mode="wait">
+                 {theme === 'dark' ? (
+                   <motion.div
+                    key="sun"
+                    initial={{ rotate: -90, opacity: 0 }}
+                    animate={{ rotate: 0, opacity: 1 }}
+                    exit={{ rotate: 90, opacity: 0 }}
+                    transition={{ duration: 0.2 }}
+                   >
+                     <Sun size={20} />
+                   </motion.div>
+                 ) : (
+                   <motion.div
+                    key="moon"
+                    initial={{ rotate: 90, opacity: 0 }}
+                    animate={{ rotate: 0, opacity: 1 }}
+                    exit={{ rotate: -90, opacity: 0 }}
+                    transition={{ duration: 0.2 }}
+                   >
+                     <Moon size={20} />
+                   </motion.div>
+                 )}
+               </AnimatePresence>
              </button>
 
              {user ? (
@@ -112,7 +135,7 @@ const Navbar: React.FC = () => {
                </div>
              ) : (
                <Link to="/login">
-                  <Button variant="primary" size="sm" className="!py-2">
+                  <Button variant="primary" size="sm" className="!py-2 hover:shadow-[0_0_15px_rgba(212,175,55,0.6)]">
                     <UserIcon size={18} className="mr-2" /> Connexion
                   </Button>
                </Link>
@@ -124,7 +147,27 @@ const Navbar: React.FC = () => {
                onClick={toggleTheme}
                className="p-2 rounded-full text-gray-500 dark:text-gray-300"
             >
-               {theme === 'dark' ? <Sun size={20} /> : <Moon size={20} />}
+               <AnimatePresence mode="wait">
+                 {theme === 'dark' ? (
+                   <motion.div
+                    key="sun-mobile"
+                    initial={{ rotate: -90, opacity: 0 }}
+                    animate={{ rotate: 0, opacity: 1 }}
+                    exit={{ rotate: 90, opacity: 0 }}
+                   >
+                     <Sun size={20} />
+                   </motion.div>
+                 ) : (
+                   <motion.div
+                    key="moon-mobile"
+                    initial={{ rotate: 90, opacity: 0 }}
+                    animate={{ rotate: 0, opacity: 1 }}
+                    exit={{ rotate: -90, opacity: 0 }}
+                   >
+                     <Moon size={20} />
+                   </motion.div>
+                 )}
+               </AnimatePresence>
             </button>
             <button
               onClick={() => setIsOpen(!isOpen)}

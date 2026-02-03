@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from 'react';
 import { Send, Bot, User, Sparkles, AlertCircle } from 'lucide-react';
 import { generateChatResponse } from '../services/geminiService';
 import { ChatMessage } from '../types';
+import Spinner from '../components/Spinner';
 
 const DigitalBrain: React.FC = () => {
   const [input, setInput] = useState('');
@@ -91,12 +92,9 @@ const DigitalBrain: React.FC = () => {
              <div className="w-10 h-10 rounded-full bg-[#001F3F] border-2 border-yann-gold flex items-center justify-center shrink-0 shadow-lg">
               <Bot size={20} className="text-yann-gold" />
             </div>
-            <div className="bg-[#001F3F] border border-yann-steel/30 rounded-2xl p-5 rounded-tl-sm shadow-md">
-              <div className="flex space-x-2 items-center h-6">
-                <div className="w-2 h-2 bg-yann-gold/60 rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></div>
-                <div className="w-2 h-2 bg-yann-gold/80 rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></div>
-                <div className="w-2 h-2 bg-yann-gold rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></div>
-              </div>
+            <div className="bg-[#001F3F] border border-yann-steel/30 rounded-2xl p-5 rounded-tl-sm shadow-md flex items-center">
+               <Spinner size="sm" />
+               <span className="ml-3 text-gray-400 text-sm animate-pulse">Le Cerveau réfléchit...</span>
             </div>
           </div>
         )}

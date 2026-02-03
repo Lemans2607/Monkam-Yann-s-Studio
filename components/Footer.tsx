@@ -52,7 +52,7 @@ const Footer: React.FC = () => {
             <ul className="space-y-4 text-sm text-gray-400">
               <li className="flex items-start gap-3">
                 <MapPin size={16} className="text-yann-gold mt-1 shrink-0" />
-                <span>Douala, Cameroun<br/>Akwa, Blvd de la Liberté</span>
+                <span>Douala, Ndogpassi 2<br/>Carrefour saint-nicholas</span>
               </li>
               <li className="flex items-center gap-3">
                 <Smartphone size={16} className="text-yann-gold shrink-0" />
@@ -60,7 +60,7 @@ const Footer: React.FC = () => {
               </li>
               <li className="flex items-center gap-3">
                 <Mail size={16} className="text-yann-gold shrink-0" />
-                <span>contact@yannsnote.cm</span>
+                <span>myannluther@gmail.com</span>
               </li>
             </ul>
           </div>
