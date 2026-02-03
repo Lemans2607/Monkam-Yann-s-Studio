@@ -144,7 +144,7 @@ const Admin: React.FC = () => {
   };
 
   return (
-    <div className="relative min-h-screen overflow-hidden">
+    <div className="relative min-h-screen overflow-hidden bg-gradient-to-br from-yann-dark via-[#001220] to-black">
       
       {/* --- Lion de la Clarté Background Animation --- */}
       <div className="absolute inset-0 pointer-events-none z-0 overflow-hidden">
@@ -197,7 +197,7 @@ const Admin: React.FC = () => {
 
       <div className="relative z-10 py-12 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Admin Header with Lion Logo */}
-        <div className="flex flex-col md:flex-row justify-between items-center mb-10 bg-white/5 backdrop-blur-md p-6 rounded-2xl border border-white/10 shadow-xl">
+        <div className="flex flex-col md:flex-row justify-between items-center mb-10 bg-[#001F3F]/80 backdrop-blur-md p-6 rounded-2xl border border-yann-gold/20 shadow-[0_0_30px_rgba(0,0,0,0.5)]">
           <div className="flex items-center gap-4 mb-4 md:mb-0">
             <img src="/logo.png" alt="Admin Logo" className="w-14 h-14 rounded-full object-cover shadow-lg shadow-yann-gold/20 border-2 border-yann-gold bg-black" />
             <div>
@@ -210,10 +210,10 @@ const Admin: React.FC = () => {
             </div>
           </div>
           <div className="flex items-center gap-3">
-             <Button variant="secondary" onClick={handleLogout} className="!px-4">
+             <Button variant="secondary" onClick={handleLogout} className="!px-4 !bg-yann-steel/20 !border-white/10 hover:!bg-red-900/40 hover:!text-red-400">
                <LogOut size={18} className="mr-2" /> Déconnexion
              </Button>
-             <Button onClick={() => setIsUploadModalOpen(true)}>
+             <Button onClick={() => setIsUploadModalOpen(true)} className="shadow-lg shadow-yann-gold/20 border border-yann-gold/50">
               <Upload size={18} className="mr-2" />
               Nouveau Fichier
             </Button>
@@ -222,12 +222,16 @@ const Admin: React.FC = () => {
 
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
           {/* Sidebar */}
-          <div className="space-y-2">
+          <div className="space-y-3">
             {Object.values(ContentCategory).map((cat) => (
               <button
                 key={cat}
                 onClick={() => setActiveTab(cat)}
-                className={`w-full flex items-center gap-3 p-3 rounded-lg transition-colors backdrop-blur-sm ${activeTab === cat ? 'bg-yann-gold text-yann-dark font-medium shadow-md' : 'text-gray-400 hover:bg-white/5 bg-black/20'}`}
+                className={`w-full flex items-center gap-3 p-4 rounded-xl transition-all duration-300 backdrop-blur-sm border ${
+                  activeTab === cat 
+                    ? 'bg-gradient-to-r from-yann-gold to-yellow-600 text-yann-dark font-bold shadow-[0_0_15px_rgba(212,175,55,0.3)] border-transparent scale-105' 
+                    : 'bg-[#001F3F]/50 text-gray-400 border-white/5 hover:border-yann-gold/30 hover:text-yann-gold hover:bg-[#001F3F]/80'
+                }`}
               >
                 {icons[cat]}
                 <span>{cat.charAt(0) + cat.slice(1).toLowerCase()}s</span>
@@ -237,12 +241,15 @@ const Admin: React.FC = () => {
 
           {/* Content Area */}
           <div className="lg:col-span-3">
-            <div className="bg-white/5 backdrop-blur-sm rounded-xl border border-white/10 overflow-hidden min-h-[400px] shadow-2xl">
-              <div className="p-6 border-b border-white/10 flex justify-between items-center bg-black/20">
-                <h2 className="text-xl font-semibold text-white">Fichiers récents</h2>
+            <div className="bg-[#001529]/90 backdrop-blur-md rounded-2xl border border-yann-gold/10 overflow-hidden min-h-[500px] shadow-2xl">
+              <div className="p-6 border-b border-white/5 flex justify-between items-center bg-gradient-to-r from-[#001F3F] to-transparent">
+                <h2 className="text-xl font-semibold text-white flex items-center gap-2">
+                    <span className="w-2 h-6 bg-yann-gold rounded-full"></span>
+                    Fichiers récents
+                </h2>
                 <div className="flex items-center gap-3">
                     {isLoadingData && <span className="text-yann-gold text-xs animate-pulse">Syncing DB...</span>}
-                    <span className="text-xs text-gray-500 bg-white/5 px-2 py-1 rounded">Total: {contentList.length}</span>
+                    <span className="text-xs text-gray-400 bg-black/40 px-3 py-1 rounded-full border border-white/5">Total: {contentList.length}</span>
                 </div>
               </div>
               <div className="divide-y divide-white/5">
@@ -262,26 +269,26 @@ const Admin: React.FC = () => {
                    </div>
                 ) : (
                   contentList.filter(item => activeTab === item.category).map((item) => (
-                    <div key={item.id} className="p-4 flex flex-col sm:flex-row sm:items-center justify-between hover:bg-white/5 transition-colors gap-4 animate-in fade-in">
+                    <div key={item.id} className="p-4 flex flex-col sm:flex-row sm:items-center justify-between hover:bg-yann-gold/5 transition-colors gap-4 animate-in fade-in group">
                       <div className="flex items-center gap-4">
-                        <div className="p-3 bg-[#001529] rounded-lg border border-white/5 shadow-inner">
+                        <div className="p-3 bg-[#001220] rounded-lg border border-white/5 shadow-inner group-hover:border-yann-gold/30 transition-colors">
                           {icons[item.category]}
                         </div>
                         <div>
-                          <h4 className="text-white font-medium">{item.title}</h4>
+                          <h4 className="text-white font-medium group-hover:text-yann-gold transition-colors">{item.title}</h4>
                           <p className="text-sm text-gray-400 line-clamp-1">{item.description}</p>
                         </div>
                       </div>
                       <div className="flex items-center gap-4 self-end sm:self-auto">
                         {item.isZeroData && (
-                          <span className="px-2 py-1 rounded-full bg-green-900/30 text-green-400 text-xs font-medium border border-green-500/20 whitespace-nowrap">
+                          <span className="px-2 py-1 rounded-full bg-green-900/20 text-green-400 text-xs font-medium border border-green-500/10 whitespace-nowrap">
                             Zéro Data
                           </span>
                         )}
                         <span className="text-sm text-gray-500 font-mono">{item.date}</span>
                         <button 
                           onClick={() => requestDelete(item.id)}
-                          className="p-2 text-gray-500 hover:text-red-400 hover:bg-red-400/10 rounded transition-colors"
+                          className="p-2 text-gray-500 hover:text-red-400 hover:bg-red-400/10 rounded-lg transition-colors border border-transparent hover:border-red-400/20"
                           title="Supprimer"
                         >
                           <Trash2 size={18} />
@@ -302,43 +309,43 @@ const Admin: React.FC = () => {
           title="Ajouter du nouveau contenu (SQL Insert)"
         >
           <div className="space-y-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
               <div>
-                <label className="block text-sm font-medium text-gray-400 mb-1">Titre du fichier</label>
+                <label className="block text-sm font-medium text-gray-400 mb-1.5">Titre du fichier</label>
                 <input 
                   type="text" 
-                  className="w-full bg-black/20 border border-white/10 rounded-lg p-3 text-white focus:border-yann-gold outline-none placeholder-gray-600"
+                  className="w-full bg-[#001220] border border-yann-steel/30 rounded-lg p-3 text-white focus:border-yann-gold focus:ring-1 focus:ring-yann-gold/50 outline-none placeholder-gray-600 transition-all"
                   placeholder="Ex: Cours Droit Civil - Chap 1"
                   value={newItemMetadata.title}
                   onChange={(e) => setNewItemMetadata({...newItemMetadata, title: e.target.value})}
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-400 mb-1">Catégorie</label>
+                <label className="block text-sm font-medium text-gray-400 mb-1.5">Catégorie</label>
                 <select 
-                  className="w-full bg-black/20 border border-white/10 rounded-lg p-3 text-white focus:border-yann-gold outline-none"
+                  className="w-full bg-[#001220] border border-yann-steel/30 rounded-lg p-3 text-white focus:border-yann-gold focus:ring-1 focus:ring-yann-gold/50 outline-none transition-all"
                   value={newItemMetadata.category}
                   onChange={(e) => setNewItemMetadata({...newItemMetadata, category: e.target.value as ContentCategory})}
                 >
                   {Object.values(ContentCategory).map(cat => (
-                    <option key={cat} value={cat} className="bg-yann-dark">{cat}</option>
+                    <option key={cat} value={cat} className="bg-[#001220]">{cat}</option>
                   ))}
                 </select>
               </div>
             </div>
 
             <div>
-               <label className="block text-sm font-medium text-gray-400 mb-1">Description courte</label>
+               <label className="block text-sm font-medium text-gray-400 mb-1.5">Description courte</label>
                <input 
                   type="text" 
-                  className="w-full bg-black/20 border border-white/10 rounded-lg p-3 text-white focus:border-yann-gold outline-none placeholder-gray-600"
+                  className="w-full bg-[#001220] border border-yann-steel/30 rounded-lg p-3 text-white focus:border-yann-gold focus:ring-1 focus:ring-yann-gold/50 outline-none placeholder-gray-600 transition-all"
                   placeholder="Description pour les étudiants..."
                   value={newItemMetadata.description}
                   onChange={(e) => setNewItemMetadata({...newItemMetadata, description: e.target.value})}
                 />
             </div>
 
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 bg-[#001220] p-3 rounded-lg border border-white/5">
               <input 
                 type="checkbox" 
                 id="zeroData"
@@ -346,7 +353,7 @@ const Admin: React.FC = () => {
                 onChange={(e) => setNewItemMetadata({...newItemMetadata, isZeroData: e.target.checked})}
                 className="w-4 h-4 rounded border-gray-600 text-yann-gold focus:ring-yann-gold bg-gray-700"
               />
-              <label htmlFor="zeroData" className="text-sm text-gray-300">Marquer comme contenu "Zéro Data" (Optimisé)</label>
+              <label htmlFor="zeroData" className="text-sm text-gray-300 cursor-pointer select-none">Marquer comme contenu "Zéro Data" (Optimisé)</label>
             </div>
 
             <div className="border-t border-white/10 pt-4">
@@ -379,7 +386,7 @@ const Admin: React.FC = () => {
           title="Confirmation requise"
         >
            <div className="flex flex-col items-center text-center p-4">
-              <div className="w-16 h-16 bg-red-900/30 rounded-full flex items-center justify-center mb-4 text-red-500 border-2 border-red-900/50">
+              <div className="w-16 h-16 bg-red-900/20 rounded-full flex items-center justify-center mb-4 text-red-500 border-2 border-red-900/50 shadow-[0_0_15px_rgba(239,68,68,0.2)]">
                 <AlertTriangle size={32} />
               </div>
               <h3 className="text-xl font-bold text-white mb-2">Supprimer ce fichier ?</h3>
@@ -394,7 +401,7 @@ const Admin: React.FC = () => {
                 <Button 
                   fullWidth 
                   onClick={confirmDelete}
-                  className="bg-red-600 hover:bg-red-700 text-white border-none"
+                  className="bg-red-600 hover:bg-red-700 text-white border-none shadow-lg shadow-red-900/20"
                 >
                   Confirmer la suppression
                 </Button>

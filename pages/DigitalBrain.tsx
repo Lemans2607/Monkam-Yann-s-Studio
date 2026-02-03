@@ -56,8 +56,9 @@ const DigitalBrain: React.FC = () => {
 
   return (
     <div className="max-w-4xl mx-auto px-4 py-8 h-[calc(100vh-80px)] flex flex-col">
-      <div className="bg-[#001529] border border-yann-gold/30 rounded-xl p-4 mb-6 flex items-start gap-4 shadow-lg shadow-black/40">
-        <div className="p-2 bg-yann-gold/10 rounded-lg">
+      {/* Header Banner */}
+      <div className="bg-gradient-to-r from-[#001F3F] to-[#001529] border border-yann-gold/30 rounded-xl p-4 mb-6 flex items-start gap-4 shadow-lg shadow-black/40">
+        <div className="p-2 bg-yann-gold/10 rounded-lg border border-yann-gold/10">
            <Sparkles className="text-yann-gold shrink-0" size={24} />
         </div>
         <div>
@@ -66,17 +67,18 @@ const DigitalBrain: React.FC = () => {
         </div>
       </div>
 
-      <div className="flex-1 overflow-y-auto space-y-6 mb-6 pr-2 custom-scrollbar">
+      {/* Messages Container */}
+      <div className="flex-1 overflow-y-auto space-y-6 mb-6 pr-2 custom-scrollbar p-4 rounded-2xl bg-black/20 border border-white/5">
         {messages.map((msg) => (
           <div key={msg.id} className={`flex gap-4 ${msg.role === 'user' ? 'flex-row-reverse' : ''}`}>
-            <div className={`w-10 h-10 rounded-full flex items-center justify-center shrink-0 border-2 ${msg.role === 'user' ? 'bg-yann-steel border-gray-500' : 'bg-yann-dark border-yann-gold'}`}>
+            <div className={`w-10 h-10 rounded-full flex items-center justify-center shrink-0 border-2 shadow-lg ${msg.role === 'user' ? 'bg-yann-steel/80 border-gray-400' : 'bg-[#001F3F] border-yann-gold'}`}>
               {msg.role === 'user' ? <User size={20} className="text-white" /> : <Bot size={20} className="text-yann-gold" />}
             </div>
             
-            <div className={`rounded-2xl p-5 max-w-[85%] shadow-md ${
+            <div className={`rounded-2xl p-5 max-w-[85%] shadow-md backdrop-blur-sm ${
               msg.role === 'user' 
-                ? 'bg-yann-steel/20 border border-white/10 text-white rounded-tr-sm' 
-                : 'bg-[#001F3F] border border-yann-gold/20 text-gray-100 rounded-tl-sm'
+                ? 'bg-yann-gold/10 border border-yann-gold/20 text-white rounded-tr-sm' 
+                : 'bg-[#001F3F] border border-yann-steel/30 text-gray-200 rounded-tl-sm'
             }`}>
               {/* Force plain text display with pre-wrap */}
               <p className="whitespace-pre-wrap leading-relaxed font-sans text-[15px]">{msg.text}</p>
@@ -86,10 +88,10 @@ const DigitalBrain: React.FC = () => {
         
         {isLoading && (
           <div className="flex gap-4">
-             <div className="w-10 h-10 rounded-full bg-yann-dark border-2 border-yann-gold flex items-center justify-center shrink-0">
+             <div className="w-10 h-10 rounded-full bg-[#001F3F] border-2 border-yann-gold flex items-center justify-center shrink-0 shadow-lg">
               <Bot size={20} className="text-yann-gold" />
             </div>
-            <div className="bg-[#001F3F] border border-yann-gold/20 rounded-2xl p-5 rounded-tl-sm">
+            <div className="bg-[#001F3F] border border-yann-steel/30 rounded-2xl p-5 rounded-tl-sm shadow-md">
               <div className="flex space-x-2 items-center h-6">
                 <div className="w-2 h-2 bg-yann-gold/60 rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></div>
                 <div className="w-2 h-2 bg-yann-gold/80 rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></div>
@@ -101,7 +103,8 @@ const DigitalBrain: React.FC = () => {
         <div ref={messagesEndRef} />
       </div>
 
-      <div className="relative bg-yann-dark rounded-xl shadow-2xl border border-white/10 p-2">
+      {/* Input Area */}
+      <div className="relative bg-[#001529] rounded-xl shadow-[0_0_20px_rgba(0,0,0,0.5)] border border-yann-gold/20 p-2 group focus-within:border-yann-gold/60 transition-colors">
         <textarea
           value={input}
           onChange={(e) => setInput(e.target.value)}
@@ -112,13 +115,13 @@ const DigitalBrain: React.FC = () => {
             }
           }}
           placeholder="Posez votre question au Cerveau Numérique..."
-          className="w-full bg-transparent border-none text-white placeholder-gray-500 focus:ring-0 resize-none min-h-[50px] max-h-[120px] py-3 pl-2 pr-12 custom-scrollbar"
+          className="w-full bg-transparent border-none text-gray-100 placeholder-gray-500 focus:ring-0 resize-none min-h-[50px] max-h-[120px] py-3 pl-3 pr-14 custom-scrollbar"
           disabled={isLoading}
         />
         <button
           onClick={handleSend}
           disabled={!input.trim() || isLoading}
-          className="absolute right-3 bottom-3 p-2 bg-yann-gold text-yann-dark rounded-lg hover:bg-yellow-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all transform hover:scale-105"
+          className="absolute right-3 bottom-3 p-2 bg-gradient-to-r from-yann-gold to-yellow-600 text-yann-dark rounded-lg hover:brightness-110 disabled:opacity-50 disabled:cursor-not-allowed transition-all transform hover:scale-105 shadow-lg shadow-yann-gold/20"
         >
           <Send size={20} />
         </button>
