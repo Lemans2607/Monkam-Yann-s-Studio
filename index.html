@@ -61,20 +61,7 @@
 </script>
 </head>
   <body>
-    git add index.html
-   git commit -m "fix: Add entry point script to index.html"
-   git push
-```
-3. Sur **Render** → **Manual Deploy** → **Clear build cache & deploy**
-
-## 🎉 Résultat attendu :
-
-Après le redéploiement, tu devrais voir dans les logs :
-```
-✓ 50+ modules transformed.
-dist/index.html           2.5 kB
-dist/assets/index-abc.js  245 kB  ← Les fichiers JS apparaissent !
-dist/assets/index-xyz.css 15 kB
+      <script type="module" src="/index.tsx"></script>
     <div id="root"></div>
   </body>
 </html>
