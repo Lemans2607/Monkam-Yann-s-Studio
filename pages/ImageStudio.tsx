@@ -74,17 +74,17 @@ const ImageStudio: React.FC = () => {
              <Wand2 className="text-yann-dark w-8 h-8" />
           </div>
         </div>
-        <h1 className="text-3xl sm:text-5xl font-bold text-white mb-4">Studio <span className="text-yann-gold">Graphique IA</span></h1>
-        <p className="text-gray-400 max-w-2xl mx-auto">
+        <h1 className="text-3xl sm:text-5xl font-bold text-gray-900 dark:text-white mb-4">Studio <span className="text-yann-gold">Graphique IA</span></h1>
+        <p className="text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
           Transformez vos images par la simple force des mots. Propulsé par Gemini Flash Image.
         </p>
       </motion.div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
         {/* Input Section */}
-        <div className="bg-white/5 rounded-2xl border border-white/10 p-6 sm:p-8 space-y-6">
-          <h3 className="text-xl font-bold text-white flex items-center gap-2">
-            <span className="bg-white/10 w-8 h-8 rounded-full flex items-center justify-center text-sm">1</span>
+        <div className="bg-white dark:bg-white/5 rounded-2xl border border-gray-200 dark:border-white/10 p-6 sm:p-8 space-y-6 shadow-lg dark:shadow-none transition-colors">
+          <h3 className="text-xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
+            <span className="bg-gray-200 dark:bg-white/10 w-8 h-8 rounded-full flex items-center justify-center text-sm">1</span>
             Image source
           </h3>
           
@@ -99,7 +99,7 @@ const ImageStudio: React.FC = () => {
               <img 
                 src={previewUrl} 
                 alt="Original" 
-                className="w-full h-64 object-cover rounded-xl border border-white/10"
+                className="w-full h-64 object-cover rounded-xl border border-gray-200 dark:border-white/10"
               />
               <button 
                 onClick={() => {
@@ -115,15 +115,15 @@ const ImageStudio: React.FC = () => {
           )}
 
           <div className="space-y-3">
-             <h3 className="text-xl font-bold text-white flex items-center gap-2">
-                <span className="bg-white/10 w-8 h-8 rounded-full flex items-center justify-center text-sm">2</span>
+             <h3 className="text-xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
+                <span className="bg-gray-200 dark:bg-white/10 w-8 h-8 rounded-full flex items-center justify-center text-sm">2</span>
                 Votre vision
              </h3>
              <textarea 
                 value={prompt}
                 onChange={(e) => setPrompt(e.target.value)}
                 placeholder="Ex: Transforme cette photo en dessin animé, ajoute des lunettes de soleil, rend l'arrière-plan cyber-punk..."
-                className="w-full bg-black/20 border border-white/10 rounded-xl p-4 text-white placeholder-gray-500 focus:border-yann-gold focus:ring-1 focus:ring-yann-gold outline-none resize-none h-32 transition-all"
+                className="w-full bg-gray-50 dark:bg-black/20 border border-gray-200 dark:border-white/10 rounded-xl p-4 text-gray-900 dark:text-white placeholder-gray-500 focus:border-yann-gold focus:ring-1 focus:ring-yann-gold outline-none resize-none h-32 transition-all"
              />
           </div>
 
@@ -146,13 +146,13 @@ const ImageStudio: React.FC = () => {
         </div>
 
         {/* Output Section */}
-        <div className="bg-white/5 rounded-2xl border border-white/10 p-6 sm:p-8 min-h-[500px] flex flex-col">
-           <h3 className="text-xl font-bold text-white flex items-center gap-2 mb-6">
+        <div className="bg-white dark:bg-white/5 rounded-2xl border border-gray-200 dark:border-white/10 p-6 sm:p-8 min-h-[500px] flex flex-col shadow-lg dark:shadow-none transition-colors">
+           <h3 className="text-xl font-bold text-gray-900 dark:text-white flex items-center gap-2 mb-6">
               <span className="bg-yann-gold text-yann-dark w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold">3</span>
               Résultat
            </h3>
 
-           <div className="flex-grow flex items-center justify-center bg-black/20 rounded-xl border border-white/5 relative overflow-hidden group">
+           <div className="flex-grow flex items-center justify-center bg-gray-50 dark:bg-black/20 rounded-xl border border-gray-200 dark:border-white/5 relative overflow-hidden group">
               {generatedImage ? (
                  <>
                    <img 
@@ -176,7 +176,7 @@ const ImageStudio: React.FC = () => {
                             <p className="text-yann-gold font-medium animate-pulse">L'IA redessine votre image...</p>
                         </div>
                     ) : (
-                        <div className="space-y-2 text-gray-500">
+                        <div className="space-y-2 text-gray-400 dark:text-gray-500">
                             <ImageIcon className="w-16 h-16 mx-auto opacity-30" />
                             <p>Le résultat apparaîtra ici</p>
                         </div>
@@ -186,11 +186,11 @@ const ImageStudio: React.FC = () => {
            </div>
            
            {generatedImage && (
-             <div className="mt-6 p-4 bg-green-900/10 border border-green-500/20 rounded-lg flex items-start gap-3">
-                <Sparkles className="text-green-400 mt-1 shrink-0" size={18} />
+             <div className="mt-6 p-4 bg-green-50 dark:bg-green-900/10 border border-green-200 dark:border-green-500/20 rounded-lg flex items-start gap-3">
+                <Sparkles className="text-green-600 dark:text-green-400 mt-1 shrink-0" size={18} />
                 <div>
-                  <p className="text-green-400 font-medium text-sm">Création terminée !</p>
-                  <p className="text-gray-400 text-xs mt-1">Généré par Gemini 2.5 Flash Image. Vous pouvez télécharger l'image ou modifier votre prompt pour essayer un autre style.</p>
+                  <p className="text-green-700 dark:text-green-400 font-medium text-sm">Création terminée !</p>
+                  <p className="text-gray-600 dark:text-gray-400 text-xs mt-1">Généré par Gemini 2.5 Flash Image. Vous pouvez télécharger l'image ou modifier votre prompt pour essayer un autre style.</p>
                 </div>
              </div>
            )}

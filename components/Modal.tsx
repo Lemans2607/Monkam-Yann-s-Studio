@@ -31,21 +31,21 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, title, children }) => {
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           onClick={onClose}
-          className="absolute inset-0 bg-black/80 backdrop-blur-sm"
+          className="absolute inset-0 bg-black/50 dark:bg-black/80 backdrop-blur-sm"
         />
         <motion.div 
           initial={{ opacity: 0, scale: 0.95, y: 20 }}
           animate={{ opacity: 1, scale: 1, y: 0 }}
           exit={{ opacity: 0, scale: 0.95, y: 20 }}
-          className="relative w-full max-w-2xl bg-yann-dark border border-white/10 rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh]"
+          className="relative w-full max-w-2xl bg-white dark:bg-yann-dark border border-gray-200 dark:border-white/10 rounded-2xl shadow-2xl overflow-hidden flex flex-col max-h-[90vh] transition-colors"
         >
-          <div className="flex items-center justify-between p-6 border-b border-white/10 bg-white/5">
-            <h3 className="text-xl font-bold text-white flex items-center gap-2">
+          <div className="flex items-center justify-between p-6 border-b border-gray-200 dark:border-white/10 bg-gray-50 dark:bg-white/5">
+            <h3 className="text-xl font-bold text-gray-900 dark:text-white flex items-center gap-2">
               <span className="text-yann-gold">✦</span> {title}
             </h3>
             <button 
               onClick={onClose}
-              className="p-2 rounded-full hover:bg-white/10 text-gray-400 hover:text-white transition-colors"
+              className="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-white/10 text-gray-500 hover:text-gray-900 dark:text-gray-400 dark:hover:text-white transition-colors"
             >
               <X size={20} />
             </button>

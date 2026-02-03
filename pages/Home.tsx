@@ -26,11 +26,12 @@ const Home: React.FC = () => {
   ];
 
   return (
-    <div className="flex flex-col min-h-screen">
+    <div className="flex flex-col min-h-screen bg-yann-light dark:bg-yann-dark transition-colors duration-300">
       {/* Hero Section */}
       <section className="relative overflow-hidden pt-20 pb-32 lg:pt-32 lg:pb-48">
-        <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-b from-yann-dark to-black opacity-50 z-0"></div>
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-yann-gold/10 rounded-full blur-[120px] pointer-events-none"></div>
+        {/* Background Gradients */}
+        <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-b from-gray-100 to-white dark:from-yann-dark dark:to-black opacity-90 dark:opacity-50 z-0 transition-colors duration-300"></div>
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-yann-gold/20 dark:bg-yann-gold/10 rounded-full blur-[120px] pointer-events-none"></div>
         
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <motion.div
@@ -38,11 +39,11 @@ const Home: React.FC = () => {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.8 }}
           >
-            <h1 className="text-4xl sm:text-6xl font-extrabold tracking-tight text-white mb-6">
+            <h1 className="text-4xl sm:text-6xl font-extrabold tracking-tight text-gray-900 dark:text-white mb-6">
               Transformez le <span className="text-yann-gold">Chaos</span> en <br className="hidden sm:block" />
-              <span className="text-transparent bg-clip-text bg-gradient-to-r from-yann-gold to-yellow-200">Clarté Royale</span>
+              <span className="text-transparent bg-clip-text bg-gradient-to-r from-yann-gold to-yellow-500 dark:to-yellow-200">Clarté Royale</span>
             </h1>
-            <p className="mt-4 text-xl text-gray-300 max-w-3xl mx-auto mb-10">
+            <p className="mt-4 text-xl text-gray-600 dark:text-gray-300 max-w-3xl mx-auto mb-10">
               L'IA ancrée sur vos documents. Citations vérifiables. 0% d'hallucination.
               La plateforme ultime pour les étudiants et entrepreneurs camerounais.
             </p>
@@ -53,7 +54,7 @@ const Home: React.FC = () => {
                 </Button>
               </Link>
               <Link to="/students">
-                <Button variant="secondary" className="w-full sm:w-auto text-lg px-8">
+                <Button variant="secondary" className="w-full sm:w-auto text-lg px-8 bg-gray-200 text-gray-900 hover:bg-gray-300 dark:bg-yann-steel dark:text-white dark:hover:bg-gray-600 border-none">
                   Espace Étudiants
                 </Button>
               </Link>
@@ -63,39 +64,39 @@ const Home: React.FC = () => {
       </section>
 
       {/* Value Props */}
-      <section className="py-20 bg-yann-dark border-t border-white/5">
+      <section className="py-20 bg-white dark:bg-yann-dark border-t border-gray-200 dark:border-white/5 transition-colors duration-300">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-12">
-            <div className="bg-white/5 p-8 rounded-2xl border border-white/10 hover:border-yann-gold/50 transition-colors">
+            <div className="bg-gray-50 dark:bg-white/5 p-8 rounded-2xl border border-gray-200 dark:border-white/10 hover:border-yann-gold/50 transition-colors shadow-sm dark:shadow-none">
               <Tooltip text="Une technologie IA qui ne s'appuie que sur vos propres sources pour garantir la vérité.">
                 <div className="w-12 h-12 bg-yann-gold/20 rounded-lg flex items-center justify-center mb-6 cursor-help">
                   <BrainCircuit className="text-yann-gold" size={28} />
                 </div>
               </Tooltip>
-              <h3 className="text-xl font-bold text-white mb-3">Intelligence Ancrée</h3>
-              <p className="text-gray-400">
+              <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-3">Intelligence Ancrée</h3>
+              <p className="text-gray-600 dark:text-gray-400">
                 Contrairement aux autres IA, Yann's Note se base uniquement sur vos documents et le contexte camerounais. Aucune invention, juste des faits.
               </p>
             </div>
-            <div className="bg-white/5 p-8 rounded-2xl border border-white/10 hover:border-yann-gold/50 transition-colors">
+            <div className="bg-gray-50 dark:bg-white/5 p-8 rounded-2xl border border-gray-200 dark:border-white/10 hover:border-yann-gold/50 transition-colors shadow-sm dark:shadow-none">
               <Tooltip text="Formats optimisés (texte/audio) pour consommer le moins de Mo possible.">
                 <div className="w-12 h-12 bg-yann-gold/20 rounded-lg flex items-center justify-center mb-6 cursor-help">
                   <Database className="text-yann-gold" size={28} />
                 </div>
               </Tooltip>
-              <h3 className="text-xl font-bold text-white mb-3">Économie Zéro Data</h3>
-              <p className="text-gray-400">
+              <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-3">Économie Zéro Data</h3>
+              <p className="text-gray-600 dark:text-gray-400">
                 Nos fiches audio et synthèses sont optimisées pour consommer un minimum de données mobiles. Idéal pour le Cameroun.
               </p>
             </div>
-            <div className="bg-white/5 p-8 rounded-2xl border border-white/10 hover:border-yann-gold/50 transition-colors">
+            <div className="bg-gray-50 dark:bg-white/5 p-8 rounded-2xl border border-gray-200 dark:border-white/10 hover:border-yann-gold/50 transition-colors shadow-sm dark:shadow-none">
               <Tooltip text="Des templates validés par des experts pour un usage immédiat.">
                 <div className="w-12 h-12 bg-yann-gold/20 rounded-lg flex items-center justify-center mb-6 cursor-help">
                   <FileText className="text-yann-gold" size={28} />
                 </div>
               </Tooltip>
-              <h3 className="text-xl font-bold text-white mb-3">Documents Prêts</h3>
-              <p className="text-gray-400">
+              <h3 className="text-xl font-bold text-gray-900 dark:text-white mb-3">Documents Prêts</h3>
+              <p className="text-gray-600 dark:text-gray-400">
                 DAO, Pitch Decks, Guides d'étude... Générez des documents professionnels formatés et prêts à l'emploi en quelques clics.
               </p>
             </div>
@@ -104,7 +105,7 @@ const Home: React.FC = () => {
       </section>
 
       {/* Testimonials Section */}
-      <section className="py-20 bg-[#001529] relative overflow-hidden">
+      <section className="py-20 bg-gray-100 dark:bg-[#001529] relative overflow-hidden transition-colors duration-300">
          {/* Decorative elements */}
          <div className="absolute top-0 right-0 p-12 opacity-5">
             <Quote size={200} className="text-yann-gold" />
@@ -112,21 +113,21 @@ const Home: React.FC = () => {
          
          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
             <div className="text-center mb-16">
-               <h2 className="text-3xl font-bold text-white">Ils ont choisi la <span className="text-yann-gold">Clarté</span></h2>
-               <p className="text-gray-400 mt-2">Ce que nos utilisateurs disent de Yann's Note</p>
+               <h2 className="text-3xl font-bold text-gray-900 dark:text-white">Ils ont choisi la <span className="text-yann-gold">Clarté</span></h2>
+               <p className="text-gray-500 dark:text-gray-400 mt-2">Ce que nos utilisateurs disent de Yann's Note</p>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
                {testimonials.map((t, i) => (
-                  <div key={i} className="bg-white/5 p-8 rounded-2xl border border-white/5 backdrop-blur-sm hover:-translate-y-2 transition-transform duration-300">
+                  <div key={i} className="bg-white dark:bg-white/5 p-8 rounded-2xl border border-gray-200 dark:border-white/5 backdrop-blur-sm hover:-translate-y-2 transition-transform duration-300 shadow-lg dark:shadow-none">
                      <Quote className="text-yann-gold mb-4 opacity-50" size={32} />
-                     <p className="text-gray-300 italic mb-6 text-lg">"{t.text}"</p>
+                     <p className="text-gray-700 dark:text-gray-300 italic mb-6 text-lg">"{t.text}"</p>
                      <div className="flex items-center gap-3">
                         <div className="w-10 h-10 rounded-full bg-gradient-to-br from-yann-gold to-yellow-700 flex items-center justify-center font-bold text-yann-dark">
                            {t.author.charAt(0)}
                         </div>
                         <div>
-                           <p className="text-white font-bold">{t.author}</p>
+                           <p className="text-gray-900 dark:text-white font-bold">{t.author}</p>
                            <p className="text-yann-gold text-sm">{t.role}</p>
                         </div>
                      </div>
